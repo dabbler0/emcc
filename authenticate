@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+import simplejson as json
+import urlparse
+import os
+import auth
+import memcache
+
+if __name__ == "__main__":
+  # Parse the path
+  qwargs = urlparse.parse_qs(os.environ["QUERY_STRING"])
+
+  # Enforce one value per query string argument
+  for key in qwargs:
+    qwargs[key] = qwargs[key][0]
+  
+  # Initialize our memcache client
+  cache = memcache.Client(['localhost:11211'], debug=0)
+  
+  # Initialize our database connection
+  conn = auth.initDB("auth.db")
+
+  # Generate the key from the given values
+  key_dict = auth.generateKey(conn, qwargs["uname"], int(qwargs["A"], 16))
+  
+  # Remember this session key for later
+  cache.set("__SRP_SESSKEY:" + qwargs["uname"], auth.hexify(key_dict["K"]))
+
+  # Give information back to the client.
+  print "content-type: application/json"
+  print ""
+  print json.dumps({
+    "s": key_dict["s"],
+    "B": key_dict["B"]
+  })

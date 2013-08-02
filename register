@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+import simplejson as json
+import urlparse
+import os
+import auth
+
+if __name__ == "__main__":
+  # Parse the path
+  qwargs = urlparse.parse_qs(os.environ["QUERY_STRING"])
+  
+  # Enforce one value per query string argument
+  for key in qwargs:
+    qwargs[key] = qwargs[key][0]
+  
+  # Initialize our database connection
+  conn = auth.initDB("auth.db")
+
+  # Initialize our memcache client
+  print "content-type: application/json"
+  print ""
+  print json.dumps({
+    "success": auth.createUser(conn, qwargs["uname"], qwargs["verifier"], qwargs["salt"])
+  })

@@ -1,0 +1,81 @@
+<html>
+<head>
+  <style>
+    body {
+      font-family:"Lato", sans-serif;
+    }
+    .dropdown_menu {
+      width:100%;
+    }
+    .dropdown_wrapper {
+      overflow:visible;
+      background-color:#900;
+      width:100px;
+      cursor:pointer;
+      font-weight:lighter;
+      float:left;
+    }
+    .dropdown_header {
+      padding:4px;
+      margin:4px;
+      background-color:#B33;
+    }
+    .dropdown_list {
+      display:none;
+      padding:4px;
+      background-color:inherit;
+    }
+    .dropdown_wrapper:hover {
+      background-color:#B33;
+    }
+    .dropdown_wrapper:hover .dropdown_list {
+      display:inline-block;
+    }
+    .dropdown_element {
+      cursor:pointer;
+      background-color:inherit;
+      padding-top:4px;
+      padding-bottom:4px;
+      white-space:nowrap;
+    }
+    .dropdown_element:hover {
+      background-color:#822;
+    }
+  </style>
+  <script>
+  </script>
+</head>
+<body>
+
+<div class="dropdown_menu">
+  <div class="dropdown_wrapper">
+    <div class="dropdown_header">
+      Things
+    </div>
+    <div class="dropdown_list">
+      <div class="dropdown_element">Oranges</div>
+      <div class="dropdown_element">Apples</div>
+    </div>
+  </div> 
+  <div class="dropdown_wrapper">
+    <div class="dropdown_header">
+      Ideas
+    </div>
+    <div class="dropdown_list">
+      <div class="dropdown_element">Capitalism as the Lack of a System</div>
+      <div class="dropdown_element">Communism as a Duck Inside a Fish Bowl</div>
+    </div>
+  </div>
+  <div class="dropdown_wrapper">
+    <div class="dropdown_header">
+      Navigation
+    </div>
+    <div class="dropdown_list">
+      <div class="dropdown_element">Navigate to here</div>
+      <div class="dropdown_element">Navigate to there</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
