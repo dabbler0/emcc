@@ -162,10 +162,20 @@ span.field_label {
   width: 150px;
 }
 
+span.field_like {
+  display: inline-block;
+  height: 27px;
+  width: 202px;
+  line-height: 27px;
+  font-size: inherit;
+  font-family: 'Times', serif;
+  overflow: hidden;
+}
+
 input.field {
   height: 25px;
   width: 200px;
-  font-size: 16px;
+  font-size: inherit;
   font-family: 'Times', serif;
   border: 1px solid #888;
   outline: none;
@@ -181,7 +191,7 @@ button.field {
   color: #000;
   border: 1px solid #888;
   cursor: pointer;
-  font-size; 18px;
+  font-size: 18px;
   font-family: 'Times', serif;
   transition: 0.2s background ease-in, 0.2s color ease-in;
 }
@@ -204,3 +214,28 @@ textarea.field {
 textarea.field:focus {
   box-shadow: 0 -1px 1px #888 inset, 0 1px 1px #888 inset;
 }
+
+/*
+  Not necessary right now.
+
+label.team {
+  cursor: pointer;
+}
+
+.team_name {
+  font-size: 20px;
+}
+
+input.collapser, div.collapsible {
+  display: none;
+}
+
+input.collapser:checked ~ div.collapsible {
+  display: block;
+}
+
+input.collapser:checked ~ div.reverse_collapsible {
+  display: none;
+}
+
+*/

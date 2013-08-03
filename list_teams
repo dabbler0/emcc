@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+import simplejson as json
+import urlparse
+import os
+import auth
+import memcache
+
+"""
+  Teams database setup as follows:
+    CREATE TABLE IF NOT EXISTS teams (id INTEGER PRIMARY KEY ASC, uname TEXT, name TEXT, members TEXT, paid BOOLEAN)
+  (teams) is in json; this is acceptable in this case because the number of teams per user should be small (<=2 in most cases).
+"""
+
+if __name__ == "__main__":
+  # Parse the path
+  qwargs = urlparse.parse_qs(os.environ["QUERY_STRING"])
+
+  # Enforce one value per query string argument
+  for key in qwargs:
+    qwargs[key] = qwargs[key][0]
+  
+  # Initialize our memcache client
+  cache = memcache.Client(["localhost:11211"], debug=0)
+  
+  # Initialize our database connection
+  conn = sqlite3.connect("teams.db")
+  c = conn.cursor()
+  
+  # Get all the teams for this user
+  c.execute("SELECT * FROM teams WHERE uname=?", (qwargs["uname"],))
+  rows = c.fetchall()
+  conn.close()
+
+  # Get this user's session key
+  key = auth.dehexify(cache.get("__SRP_SESSKEY:" + qwargs["uname"]))
+  
+  # Encrypt the teams and return them.
+  print "content-type: application/json"
+  print ""
+  print auth.encrypt(key, json.dumps({
+    "teams": rows
+  }))

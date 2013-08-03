@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet'/>
+    <link rel="stylesheet" href="emcc.css"/>
+    <script src="/jslib/jquery.min.js"></script>
+    <script src="/jslib/rollups/aes.js"></script>
+    <script src="/jslib/rollups/md5.js"></script>
+    <script src="/jslib/rollups/sha512.js"></script>
+    <script src="/jslib/rollups/sha256.js"></script>
+    <script src="/jslib/BigInt.js"></script>
+    <script src="/jslib/auth.js"></script>
+    <script>
+      $(function() {
+        $("input.field").click(function() { return false; });
+      })
+    </script>
+  </head>
+  <body>
+    <div class="blockish" id="topbar">
+      <div class="blockish" id="topbar_text">
+        <div class="big_header">Exeter Math Club Competition</div>
+        <div class="big_subheader_wrapper">
+          <div class="big_subheader">EMC<sup>2</sup></div>
+        </div>
+      </div>
+      <img src="emcc_logo.png" id="emcc_logo"/>
+    </div>
+    <div class="blockish" id="navbar">
+      <div class="navbar_section_header">Contest Information</div>
+      <div class="indented_block">
+        <a class="navigation_element">Schedule</a>
+        <a class="navigation_element">Format</a>
+        <a class="navigation_element">Rules</a>
+      </div>
+      <div class="navbar_section_header">Travel Information</div>
+      <div class="indented_block">
+        <a class="navigation_element">Campus Map</a>
+        <a class="navigation_element">Parking</a>
+        <a class="navigation_element">Transportation</a>
+        <a class="navigation_element">Lodging</a>
+      </div>
+      <div class="navbar_section_header">Register</div>
+      <div class="indented_block">
+        <a class="navigation_element" href="login.html">On Site</a>
+        <a class="navigation_element">Online</a>
+      </div>
+      <div class="navbar_section_header">Coaches</div>
+      <div class="indented_block">
+        <a class="navigation_element">Login</a>
+      </div>
+      <div class="navbar_section_header">Archive</div>
+      <div class="indented_block">
+        <a class="navigation_element">(to load)</a>
+      </div>
+    </div>
+    <div class="blockish" id="content">
+      <div class="content_header">Teams</div>
+      <div class="content_body">
+        <div id="team_list">
+        </div>
+        <a href="edit_team.html?team=_new">Register New Team</a>
+      </div>
+    </div>
+    <div class="blockish" id="footer">
+      <div class="jane_street_support">
+        The Exeter Math Club Competition 2013 is sponsored by <img src="jane_street_logo.jpg" id="jane_street_logo"/>
+      </div>
+      <div class="contact_info">
+        <div>Contact us: lbraswell@exeter.edu | cfeng@exeter.edu</div>
+        <div>For questions about our website: dbau@exeter.edu | wfan@exeter.edu</div>
+      </div>
+    </div>
+  </body>
+</html>
