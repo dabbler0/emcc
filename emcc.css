@@ -191,7 +191,7 @@ button.field {
   color: #000;
   border: 1px solid #888;
   cursor: pointer;
-  font-size: 18px;
+  font-size: inherit;
   font-family: 'Times', serif;
   transition: 0.2s background ease-in, 0.2s color ease-in;
 }
@@ -199,6 +199,15 @@ button.field {
 button.field:hover {
   background: #FFF;
   color: #710001;
+}
+
+a.team {
+  display: block;
+  cursor: pointer;
+}
+
+a.field {
+  cursor: pointer;
 }
 
 textarea.field {

@@ -4,6 +4,7 @@ import urlparse
 import os
 import auth
 import memcache
+import sqlite3
 
 if __name__ == "__main__":
   # Parse the path
@@ -20,15 +21,17 @@ if __name__ == "__main__":
   conn = sqlite3.connect("teams.db")
   c = conn.cursor()
 
-  # Get the teams belonging to this user
-  c.execute("UPDATE teams SET name=?, members=? WHERE id=?", (qwargs["name"], qwargs["members"], qwargs["id"]))
-  conn.commit()
-
   # Get the session key for this user
   key = auth.dehexify(cache.get("__SRP_SESSKEY:" + qwargs["uname"]))
   
+  info = json.loads(auth.decrypt(key, qwargs["info"]))
+  
+  # Get the teams belonging to this user
+  c.execute("UPDATE teams SET name=?, members=? WHERE id=?", (info["name"], json.dumps(info["members"]), info["id"]))
+  conn.commit()
+  
   print "content-type: application/json"
   print ""
-  print auth.encrypt(key, json.dumps({
-    "success": True if c.rowcount == 1 else False
-  }))
+  print json.dumps({
+      "success": True if c.rowcount == 1 else False
+  })

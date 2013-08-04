@@ -4,6 +4,7 @@ import urlparse
 import os
 import auth
 import memcache
+import sqlite3
 
 """
   Teams database setup as follows:
@@ -26,14 +27,17 @@ if __name__ == "__main__":
   conn = sqlite3.connect("teams.db")
   c = conn.cursor()
   
-  # Create this team. Payment will be server-side.
-  c.execute("INSERT INTO teams (uname, name, members, paid) VALUES (?, ?, ?, ?)", (qwargs["uname"], qwargs["name"], qwargs["members"], False))
-  conn.commit()
-  conn.close()
-  
   # Get the session key for this user
   key = auth.dehexify(cache.get("__SRP_SESSKEY:" + qwargs["uname"]))
   
+  # Decrypt the team information we got
+  info = json.loads(auth.decrypt(key, qwargs["info"]))
+  
+  # Create this team. Payment will be server-side.
+  c.execute("INSERT INTO teams (uname, name, members, paid) VALUES (?, ?, ?, ?)", (qwargs["uname"], info["name"], json.dumps(info["members"]), False))
+  conn.commit()
+  conn.close()
+
   print "content-type: application/json"
   print ""
   print auth.encrypt(key, json.dumps({

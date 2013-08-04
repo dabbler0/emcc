@@ -4,6 +4,7 @@ import urlparse
 import os
 import auth
 import memcache
+import sqlite3
 
 """
   Teams database setup as follows:
@@ -31,6 +32,16 @@ if __name__ == "__main__":
   rows = c.fetchall()
   conn.close()
 
+  # Format the teams for this user
+  teams = []
+  for row in rows:
+    teams.append({
+      "id":  row[0],
+      "name": row[2],
+      "members": json.loads(row[3]), # TODO it seems silly to deserialize and immediately reserialize this.
+      "paid": row[4]
+    })
+
   # Get this user's session key
   key = auth.dehexify(cache.get("__SRP_SESSKEY:" + qwargs["uname"]))
   
@@ -38,5 +49,5 @@ if __name__ == "__main__":
   print "content-type: application/json"
   print ""
   print auth.encrypt(key, json.dumps({
-    "teams": rows
+    "teams": teams
   }))

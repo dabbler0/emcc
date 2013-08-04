@@ -12,9 +12,126 @@
     <script src="/jslib/auth.js"></script>
     <script>
       $(function() {
-        $("input.field").click(function() { return false; });
+        var teams,
+            current_viewed_team,
+            key = CryptoJS.enc.Base64.parse(localStorage["SRP_SESS_KEY"]),
+            team_list_pane = $("div#team_list_pane"),
+            team_list = $("div#team_list"),
+            team_edit_pane = $("div#team_edit_pane"),
+            team_member_inputs = $("input.team_member"),
+            team_name = $("input#team_name");
+        
+        //Get the list of teams belonging to this user
+        function reloadTeams() {
+          $.ajax({
+            url: "/cgi-bin/list_teams",
+            data: {
+              "uname": localStorage["SRP_UNAME"]
+            },
+            dataType: "json",
+            success: function(data) {
+              //Clear the team list
+              team_list.html("");
+
+              //Format the teams we've recieved
+              teams = JSON.parse(decrypt(key, data)).teams;
+
+              for (var i = 0; i < teams.length; i += 1) {
+                team_list.append($("<a>").addClass("team").text(teams[i].name).click(function() {
+                  var team = teams[i];
+                  return function() {
+                    //Show the other pane
+                    team_list_pane.hide();
+                    team_edit_pane.show();
+                    current_viewed_team = team.id;
+
+                    //Set the inputs to be the information for this team
+                    team_name.val(team.name);
+                    team_member_inputs.each(function(k) {
+                      if (team.members[k]) {
+                        this.value = team.members[k]
+                      }
+                    });
+                  };
+                }()));
+              }
+            }
+          });
+        }
+
+        reloadTeams();
+
+        $("a#new").click(function() {
+          team_name.val("");
+          team_member_inputs.val("");
+          team_list_pane.hide();
+          team_edit_pane.show();
+          current_viewed_team = -1;
+        });
+        
+        $("button#cancel").click(function() {
+          reloadTeams();
+          team_edit_pane.hide();
+          team_list_pane.show();
+        });
+        
+        function getTeamMembers() {
+          team_members = []
+          team_member_inputs.each(function() {
+            var team_member;
+            if ((team_member = this.value) !== "") {
+              team_members.push(team_member);
+            }
+          });
+          return team_members;
+        }
+
+        $("button#save").click(function() {
+          if (current_viewed_team === -1) {
+            //Register a new team with this info
+            console.log(getTeamMembers());
+            $.ajax({
+              url: "/cgi-bin/register_team",
+              data: {
+                "uname": localStorage["SRP_UNAME"],
+                "info": JSON.stringify(encrypt(key, JSON.stringify({
+                  "name": team_name.val(),
+                  "members": getTeamMembers()
+                })))
+              },
+              success: function() {
+                reloadTeams();
+                team_edit_pane.hide();
+                team_list_pane.show();
+              }
+            });
+          }
+          else {
+            $.ajax({
+              url: "/cgi-bin/edit_team",
+              data: {
+                "uname": localStorage["SRP_UNAME"],
+                "info": JSON.stringify(encrypt(key, JSON.stringify({
+                  "id": current_viewed_team,
+                  "name": team_name.val(),
+                  "members": getTeamMembers()
+                })))
+              },
+              success: function() {
+                reloadTeams();
+                team_edit_pane.hide();
+                team_list_pane.show();
+              }
+            });
+          }
+        });
       })
     </script>
+    <style>
+      div#team_edit_pane {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <div class="blockish" id="topbar">
@@ -57,9 +174,25 @@
     <div class="blockish" id="content">
       <div class="content_header">Teams</div>
       <div class="content_body">
-        <div id="team_list">
+        
+        <div id="team_list_pane">
+          <div id="team_list">
+          </div>
+          <a class="field" id="new">Register New Team</a>
         </div>
-        <a href="edit_team.html?team=_new">Register New Team</a>
+        
+        <div id="team_edit_pane">
+          <div class="field_wrapper"><input class="field" placeholder="Team Name" id="team_name"/></div>
+          <div class="content_body">
+            <div class="field_wrapper"><input class="field team_member" placeholder="Team Members"/></div>
+            <div class="field_wrapper"><input class="field team_member"/></div>
+            <div class="field_wrapper"><input class="field team_member"/></div>
+            <div class="field_wrapper"><input class="field team_member"/></div>
+          </div>
+          <button class="field" id="save">Save</button>
+          <button class="field" id="cancel">Cancel</a>
+        </div>
+
       </div>
     </div>
     <div class="blockish" id="footer">
